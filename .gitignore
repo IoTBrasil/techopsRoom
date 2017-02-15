@@ -1,2 +1,4 @@
 database.db
 *.pyc
+
+server_js/node_modules
