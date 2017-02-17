@@ -18,13 +18,15 @@ void setup(void){
 }
 
 void loop(void){
-  temperature = ((analogRead(0))*3.3/1023)/0.01;
+  temperature= calculaTemperatura();
   server.handleClient();
   if(temperaturaCalculation(temperature)){
     Serial.println(temperaturaStage);
   }
 }
-
+int calculaTemperatura(){
+  return ((analogRead(0))*3.3/1023)/0.01;
+}
 void configuration(){
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -67,3 +69,4 @@ float modulo(float number){
   }
   return number;
 }
+
