@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<link rel="stylesheet"
+		href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+		    <script
+src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+		<title>Temperature Control</title>
+	</head>
+	<body>
+		<h1 style="text-align:center"> {{ temperature }} </h1>
+		<div class="ct-chart"></div>
+		<script type="text/javascript"> 
+new Chartist.Line('.ct-chart', {
+	  labels: [1, 2, 3, 4, 5, 6, 7, 8],
+	    series: [
+		    [{{ temperature }}]
+				  ]
+}, {
+	  low: 0,
+	    showArea: true
+});
+		</script>
+	</body>
+
+</html>
