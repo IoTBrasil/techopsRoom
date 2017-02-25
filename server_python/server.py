@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from flask import render_template
+from datetime import datetime
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -22,19 +23,25 @@ def root():
 
 @app.route('/temperature')
 def temperatureControl():
+    print datetime.now().time()
     temperature = "0"
+    time = '0:00:00'
     session = DBSession()
     for row in session.query(Temperature).all():
         print(row.temperature)
+        print(str(row.time.time()).split('.',1)[0])
         temperature = temperature + "," +  str(row.temperature) 
-    return render_template('temperature.html', temperature=temperature) 
+        time = time + ',' +  str(row.time.time()).split('.',1)[0] 
+    print time 
+    return render_template('temperature.html', temperature=temperature,
+            time=time.split(',')) 
 
 @app.route("/temperature-1", methods=['POST'])
 def temperature():
     temp = request.form['temp']
     print " Temperature "+ temp
     session = DBSession()
-    session.add(Temperature(temperature=temp))
+    session.add(Temperature(temperature=temp, time=datetime.now()))
     session.commit()
     return temp
 
