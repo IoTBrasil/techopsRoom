@@ -23,16 +23,12 @@ def root():
 
 @app.route('/temperature')
 def temperatureControl():
-    print datetime.now().time()
     temperature = "0"
     time = '0:00:00'
     session = DBSession()
     for row in session.query(Temperature).all():
-        print(row.temperature)
-        print(str(row.time.time()).split('.',1)[0])
         temperature = temperature + "," +  str(row.temperature) 
         time = time + ',' +  str(row.time.time()).split('.',1)[0] 
-    print time 
     return render_template('temperature.html', temperature=temperature,
             time=time.split(',')) 
 
