@@ -9,7 +9,30 @@ src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 	</head>
 	<body style="background:#EADBC4">
 		<h1 style="text-align:center"> {{ temperature }} </h1>
-		<div class="ct-chart"></div>
+		<div class="container">
+		<div class="ct-chart">
+		</div>
+		</div>
+		<div class="container-statistics"
+		style="width:800px;margin:auto;text-align:center">
+			<div style="
+				width:50%;float:left;
+">
+				<h3 style="font-size:2em;color:#815E5B">Average:</h3>
+			<h3 style="font-size:3em;color:#815E5B" class="average"
+				> {{ average }} </h3>
+			</div>
+			<div style="
+				width:50%;float:left;
+">
+				<h3
+					style="font-size:2em;color:#815E5B">Standard
+					Deviation:</h3>
+			 <h3 class="standard-deviation"
+			 style="font-size:
+			 3em;color:#815E5B"> {{ standardDeviation }} </h3>
+			</div>
+		</div>
 		<script type="text/javascript"> 
 new Chartist.Line('.ct-chart', {
 	labels: [{%- for line in time -%}
@@ -23,7 +46,13 @@ new Chartist.Line('.ct-chart', {
 				  ]
 }, {
 	  low: 0,
-	    showArea: true
+	  fullWidth: true,
+	    chartPadding: {
+		        right: 20
+				  },
+	    showArea: true,
+	       height: '400px',
+	       chartPadding: 60
 });
 		</script>
 	</body>
