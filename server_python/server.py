@@ -32,7 +32,7 @@ def average(list):
     return sum/len(list)
 
 def standardDeviation(average,list):
-   return statistics.stdev(list)
+   return statistics.pstdev(list)
 
 @app.route('/temperature')
 def temperatureControl():
@@ -40,14 +40,15 @@ def temperatureControl():
     time = '0:00:00'
     session = DBSession()
     temperatures= []
-    for row in session.query(Temperature).all():
+    lines =  session.query(Temperature).order_by(Temperature.time.desc()).limit(5).all()
+    reversedList = list(reversed(lines))
+    for row in reversedList:
         temperature = temperature + "," +  str(row.temperature) 
         time = time + ',' +  str(row.time.time()).split('.',1)[0] 
         temperatures.append(row.temperature)
 
     average2 = average(temperatures) 
     sd = standardDeviation(average2,temperatures)
-    print average2
     return render_template('temperature.html', temperature=temperature,
             time=time.split(','), average = average2,standardDeviation = sd) 
 
