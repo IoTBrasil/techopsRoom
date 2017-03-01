@@ -1,3 +1,4 @@
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from flask import Flask
 from flask import request
 from flask import render_template
@@ -5,8 +6,10 @@ from flask import jsonify
 
 import math
 import statistics
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from apscheduler.schedulers.background import BackgroundScheduler
+import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_declarative import Temperature, Base
@@ -25,14 +28,14 @@ def health_check():
 def root():
      return app.send_static_file('index.html')
 
-def average(list):
+def averageCalculator(list):
     sum = 0
     for number in list:
         sum += number
 
     return sum/len(list)
 
-def standardDeviation(average,list):
+def standardDeviationCalculator(average,list):
    return statistics.pstdev(list)
 
 @app.route('/temperature', methods=['GET'])
@@ -48,10 +51,11 @@ def temperatureControl():
         time = time + ',' +  str(row.time.time()).split('.',1)[0] 
         temperatures.append(row.temperature)
 
-    average2 = average(temperatures) 
-    sd = standardDeviation(average2,temperatures)
+    average =  averageCalculator(temperatures) 
+    standardDeviation = standardDeviationCalculator(average,temperatures)
     return render_template('temperature.html', temperature=temperature,
-            time=time.split(','), average = average2,standardDeviation = sd) 
+            time=time.split(','), average = average,standardDeviation =
+            standardDeviation) 
 
 @app.route("/temperature", methods=['POST'])
 def temperature():
@@ -59,10 +63,27 @@ def temperature():
     temp = json['temp']
     print " Temperature "+ str(temp)
     session = DBSession()
-    session.add(Temperature(temperature=temp, time=datetime.now()))
+    temperature = Temperature(temperature=temp, time=datetime.now())
+    session.add(temperature)
     session.commit()
     return str(temp) 
 
+
+
+
+def dumpTemperatureTable():
+    time = datetime.now() + timedelta(days =-1) 
+    session = DBSession()
+    session.query(Temperature).filter(time >= Temperature.time).delete()
+    session.commit()
+    print str(time)
+    return str(time)
+    
+
 if __name__ == '__main__':
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(dumpTemperatureTable, 'interval', days=1)
+    scheduler.start()
+    logging.basicConfig()
     app.run(debug=True)
 
