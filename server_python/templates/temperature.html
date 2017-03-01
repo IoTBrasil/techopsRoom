@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet"
+		href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+		    <script
+src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+		<title>Temperature Control</title>
+	</head>
+	<body style="background:#EADBC4">
+		<h1 style="text-align:center;font-size:2em;color:#4E221F"> Temperature Control Dashboard </h1>
+		<div class="container">
+		<div class="ct-chart">
+		</div>
+		</div>
+		<div class="container-statistics"
+		style="width:800px;margin:auto;text-align:center">
+			<div style="
+				width:50%;float:left;
+">
+				<h3
+					style="font-size:2em;color:#A88380;margin-top:0px">Average:</h3>
+			<h3 style="font-size:3em;color:#523533;margin-top:5px" class="average"
+				> {{ average }} </h3>
+			</div>
+			<div style="
+				width:50%;float:left;
+">
+				<h3
+					style="font-size:2em;color:#A88380;margin-top:0px">Standard
+					Deviation:</h3>
+			 <h3 class="standard-deviation"
+			 style="font-size:
+			 3em;color:#523533;margin-top:5px"> {{ standardDeviation }} </h3>
+			</div>
+		</div>
+		<script type="text/javascript"> 
+new Chartist.Line('.ct-chart', {
+	labels: [{%- for line in time -%}
+	        '{{ line }}'
+	        {%- if not loop.last -%}
+		,
+	        {%- endif -%}
+	    {%- endfor -%}],
+	    series: [
+		    [{{ temperature }}]
+				  ]
+}, {
+	  low: 0,
+	  fullWidth: true,
+	    chartPadding: {
+		        right: 20
+				  },
+	    showArea: true,
+	       height: '400px',
+	       chartPadding: 60
+});
+		</script>
+	</body>
+
+</html>
