@@ -1,0 +1,32 @@
+body {
+background:#EADBC4
+}
+
+h1 {
+text-align:center;
+font-size:2em;
+color:#4E221F;
+}
+
+.container-statistics {
+width:800px;
+margin:auto;
+text-align:center;
+}
+
+.container-statistics div { 
+width:50%;
+float:left;
+}
+
+.title-statistics { 
+font-size:2em;
+color:#A88380;
+margin-top:0px;
+}
+
+.average,.standard-deviation {
+font-size:3em;
+color:#523533;
+margin-top:5px;
+}
