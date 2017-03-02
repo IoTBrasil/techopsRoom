@@ -6,6 +6,7 @@ from flask import jsonify
 
 import math
 import statistics
+import databaseAccess
 from datetime import datetime, timedelta
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -42,9 +43,8 @@ def standardDeviationCalculator(average,list):
 def temperatureControl():
     temperature = "0"
     time = '0:00:00'
-    session = DBSession()
     temperatures= []
-    lines =  session.query(Temperature).order_by(Temperature.time.desc()).limit(5).all()
+    lines = databaseAccess.retrieveTemperatureOrderByDesc()
     reversedList = list(reversed(lines))
     for row in reversedList:
         temperature = temperature + "," +  str(row.temperature) 
@@ -62,10 +62,8 @@ def temperature():
     json = request.get_json()
     temp = json['temp']
     print " Temperature "+ str(temp)
-    session = DBSession()
     temperature = Temperature(temperature=temp, time=datetime.now())
-    session.add(temperature)
-    session.commit()
+    databaseAccess.saveTemperature(temperature)
     return str(temp) 
 
 
@@ -73,10 +71,8 @@ def temperature():
 
 def dumpTemperatureTable():
     time = datetime.now() + timedelta(days =-1) 
-    session = DBSession()
-    session.query(Temperature).filter(time >= Temperature.time).delete()
-    session.commit()
     print str(time)
+    databaseAccess.deleteByTime(time)
     return str(time)
     
 
